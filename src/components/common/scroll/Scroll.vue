@@ -30,19 +30,26 @@ export default {
             click:true,
             probeType:this.probeType,
             pullUpLoad:this.pullUpLoad
-        }),
-
-        this.bscroll.on('scroll',(position)=>{
-            this.$emit('scroll',position)
         })
 
-        this.bscroll.on('pullingUp',()=>{
-            this.$emit('pullingUp')
-        })
+        if(this.probeType===2||this.probeType===3){
+                this.bscroll.on('scroll',(position)=>{
+                this.$emit('scroll',position)
+            })
+        }
+
+        if(this.pullUpLoad){
+            this.bscroll.on('pullingUp',()=>{
+                this.$emit("pullingUp")
+            })
+        }
     },
     methods:{
         scrollTo(x,y,time=0){
             this.bscroll.scrollTo(x,y,time)
+        },
+        refresh(){
+            this.bscroll.refresh()
         },
         finishPullUp(){
             this.bscroll.finishPullUp()

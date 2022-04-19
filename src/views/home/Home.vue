@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物车</div></nav-bar>
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load=true @pullingUp="loadMore">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banners='banners'></home-swiper>
       <recommend-view :recommends='recommends'></recommend-view>
       <feature-view></feature-view>
@@ -27,6 +27,7 @@ import BackTop from 'components/content/backTop/BackTop'
 
 
 import {getHomeMultidata,getHomeGoods} from 'network/home'
+import {debounce} from 'common/utils'
 export default {
     name:'Home',
     components:{
@@ -59,6 +60,14 @@ export default {
       this.getHomeGoods('pop')
       this.getHomeGoods('sell')
     },
+    mounted(){
+      const refresh=debounce(this.$refs.scroll.refresh,500)
+      this.$bus.$on('itemImageLoad',()=>{
+        refresh()
+        
+      })
+    }
+    ,
     methods:{
       /* 事件监听相关方法 */
       tabClick(index){
@@ -79,8 +88,8 @@ export default {
       },
       loadMore(){
         this.getHomeGoods(this.currentType)
-        this.$refs.scroll.finishPullUp()
       },
+      
 
       /* 网络请求相关方法 */
       getHomeMultidata(){
@@ -94,7 +103,8 @@ export default {
           getHomeGoods(type,page).then(res=>{
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page+=1
-          this.$refs.scroll.scroll.refresh()
+
+          this.$refs.scroll.finishPullUp()
         })
         
       }
