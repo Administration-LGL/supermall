@@ -35,6 +35,7 @@ export default {
         if(this.probeType===2||this.probeType===3){
                 this.bscroll.on('scroll',(position)=>{
                 this.$emit('scroll',position)
+                // console.log(position);   
             })
         }
 
@@ -53,6 +54,9 @@ export default {
         },
         finishPullUp(){
             this.bscroll.finishPullUp()
+        },
+        getScrollY(){
+            return this.bscroll?this.bscroll.y:0
         }
     }
 }
